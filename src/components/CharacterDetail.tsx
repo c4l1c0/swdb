@@ -48,6 +48,7 @@ const CharacterDetail = () => {
 
     return (
         <div>
+            <Link to="/">← Back to Characters</Link>
             <h2>{character.name}</h2>
             <table style={{width: "60vmin"}}>
                 <tbody>
