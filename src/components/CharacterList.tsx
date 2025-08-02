@@ -6,15 +6,12 @@ import type { Character } from '../types/swapi';
 const CharacterList = () => {
     const [characters, setCharacters] = useState<Character[]>([]);
     const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
 
-    const fetchPage = async (page: number) => {
+    const fetchPage = async () => {
         setLoading(true);
         try {
-            const { characters: characterList, totalPages } = await getCharacters(page);
+            const { characters: characterList } = await getCharacters();
             setCharacters(characterList);
-            setTotalPages(totalPages);
         } catch (err) {
             console.error('Error fetching characters:', err);
         } finally {
@@ -23,11 +20,8 @@ const CharacterList = () => {
     };
 
     useEffect(() => {
-        fetchPage(currentPage);
-    }, [currentPage]);
-
-    const handlePrev = () => setCurrentPage((p) => Math.max(p - 1, 1));
-    const handleNext = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
+        fetchPage();
+    }, []);
 
     if (loading) return <p>Loading...</p>;
 
@@ -36,23 +30,11 @@ const CharacterList = () => {
             <h2>Star Wars Characters</h2>
                 {characters.map((char, index) => (
                     <p key={index}>
-                        <Link to={`/character/${char.uid}`}>
+                        <Link to={`/character/${index+1}`}>
                             <strong>{char.name}</strong>
                         </Link>{' '}
                     </p>
                 ))}
-
-            <div style={{ marginTop: '1rem' }}>
-                <button onClick={handlePrev} disabled={currentPage === 1}>
-                    ◀ Prev
-                </button>
-                <span style={{ margin: '0 1rem' }}>
-          Page {currentPage} of {totalPages}
-        </span>
-                <button onClick={handleNext} disabled={currentPage === totalPages}>
-                    Next ▶
-                </button>
-            </div>
         </div>
     );
 };
